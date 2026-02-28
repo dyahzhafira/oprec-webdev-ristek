@@ -6,12 +6,12 @@ import { FileText, ChevronRight, Users, Activity } from "lucide-react";
 interface FormCardProps {
   id: string;
   title: string;
-  responses: number;
-  status: "Published" | "Draft" | "Closed";
+  response: number;
+  status: 'Published' | 'Draft' | 'Closed';
   lastActivity: string;
 }
 
-export default function FormCard({ id, title, responses, status, lastActivity }: FormCardProps) {
+export default function FormCard({ id, title, response, status, lastActivity }: FormCardProps) {
   const statusStyles = {
     Published: "bg-purple-50 text-ristek-purple",
     Draft: "bg-purple-50 text-zinc-500 ",
@@ -35,7 +35,7 @@ export default function FormCard({ id, title, responses, status, lastActivity }:
             </h3>
             <div className="flex flex-col md:flex-wrap gap-2 mt-2">
               <span className="text-sm text-zinc-400 flex  items-center gap-2">
-                <Users size={14} className="text-ristek-purple" /> {responses} Responses
+                <Users size={14} className="text-ristek-purple" /> {response} Responses
               </span>
               
               <span className="text-sm text-zinc-400  flex gap-2 items-center">

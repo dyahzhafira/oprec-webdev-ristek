@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id  String @id @default(cuid())
+  email String @unique
+  password String
+  name  String?
+  forms Form[]
+}
+
+model Form {
+  id  String  @id @default(cuid())
+  title String
+  status  String  @default("Draft")
+  userId  String
+  user  User  @relation(fields: [userId], references: [id])
+  questions Question[] 
+  createdAt DateTime  @default(now())
+}
+
+model Question {
+  id  String  @id @default(cuid())
+  label String  
+  type  String  @default("text") // text, email, dll
+  placeholder String? 
+  formId  String
+  form  Form  @relation(fields: [formId], references: [id], onDelete: Cascade)
+}

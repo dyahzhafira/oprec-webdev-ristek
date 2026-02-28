@@ -16,7 +16,7 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-4">
-          <Link href="/" className="text-right">
+          <Link href="/login" className="text-right">
             <Button className="bg-ristek-purple hover:bg-purple-500 transition-colors text-xs md:text-sm">Login Here!</Button>
           </Link>
         </div>

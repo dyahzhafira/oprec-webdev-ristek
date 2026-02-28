@@ -2,14 +2,25 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
+import {useState} from "react";
 export default function NavbarDashboard() {
   const pathname = usePathname();
+  const [user, setUser] = useState({
+    name: "Loading...",
+  });
+  const fetchUserData = async () => {
+    const res = await fetch("/api/auth/me");
+    if (res.ok) {
+      const data = await res.json();
+      setUser(data);
+    }
+  };
+  useState(() => {
+    fetchUserData();
+  });
 
   const navLinks = [
     { name: "Dashboard", href: "/dashboard" },
-    { name: "About Us", href: "#" },
-    { name: "Timeline", href: "#" },
   ];
 
   return (
@@ -36,7 +47,7 @@ export default function NavbarDashboard() {
 
         <div className="flex items-center gap-4">
           <div className="hidden sm:block text-right">
-            <p className="text-md font-bold text-zinc-900 leading-none">Dyah Zhafira</p>
+            <p className="text-md font-bold text-zinc-900 leading-none">{user.name}</p>
           </div>
           <div className="w-10 h-10 rounded-xl bg-ristek-purple flex items-center justify-center"></div>
         </div>

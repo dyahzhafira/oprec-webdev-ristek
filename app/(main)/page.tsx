@@ -6,7 +6,7 @@ export default function HomePage() {
     <div className="bg-white font-sans selection:bg-purple-100 min-h-screen flex flex-col items-center justify-center">
       <main className="max-w-4xl mx-auto px-6 flex flex-col items-center text-center">
         
-        <h1 className="text-5xl md:text-7xl font-bold text-[#18181b] tracking-tighter leading-[1.05] mb-6">
+        <h1 className="text-5xl md:text-7xl font-black text-[#18181b] tracking-tighter leading-[1.05] mb-6">
           Ristek<span className="text-[#7c3aed]">Forms.</span> <br />
           Built for teams.
         </h1>

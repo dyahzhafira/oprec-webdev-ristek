@@ -1,5 +1,6 @@
 "use client"
-
+import { useState } from "react";
+import {useRouter} from "next/navigation";
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -7,6 +8,29 @@ import { Label } from "@/components/ui/label"
 import { ArrowLeft } from "lucide-react"
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const[password, setPassword]=useState("");
+  const[error, setError]=useState("");
+  const router=useRouter();
+
+  const handleLogin = async (e: React.FormEvent)=>{
+    e.preventDefault();
+    setError("");
+
+    const res=await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {"Content-Type":"application/jsom"},
+      body: JSON.stringify({email, password}),
+    });
+    if (res.ok) {
+      router.push("/dashboard");
+      router.refresh();
+    } else {
+      const data = await res.json();
+      setError(data.error || "Login gagal, cek email/password!");
+    }
+
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#FAFAFB] font-sans p-6">
       <Link 
@@ -22,22 +46,31 @@ export default function LoginPage() {
           <div className="text-xl font-black text-ristek-purple uppercase ">
             RISTEK<span className="text-black">FORMS</span>
           </div>
-          <h2 className="text-4xl font-black text-zinc-900">
+          <h2 className="text-4xl font-bold text-zinc-900">
             Welcome Back
           </h2>
           <p className="text-zinc-500 font-medium">
             Please enter your details to sign in.
           </p>
         </div>
-
+      
         <div className="bg-white mt-5 p-8 md:p-10 rounded-xl border border-zinc-100 shadow-xl ">
-          <form className="space-y-6">
+          <form 
+            onSubmit={handleLogin}
+            className="space-y-6">
+            {error && (
+              <div className="bg-red-100 text-red-700 p-3 rounded-xl text-md font-bold text-center">
+                {error}
+              </div>
+            )}
             <div className="space-y-2">
-              <Label className="text-sm font-black text-zinc-500 uppercase ml-1">
+              <Label className="text-sm font-bold text-zinc-500 uppercase ml-1">
                 Email Address
               </Label>
               <Input 
                 type="email"
+                value={email}
+                onChange={(e)=>setEmail(e.target.value)}
                 placeholder="name@example.com"
                 className="text-zinc-400 rounded-2xl border-zinc-100 bg-zinc-50/50 h-14" 
               />
@@ -54,6 +87,8 @@ export default function LoginPage() {
               </div>
               <Input 
                 type="password" 
+                value={password}
+                onChange={(e)=>setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="text-zinc-400 rounded-2xl border-zinc-100 bg-zinc-50/50 h-14 " 
               />

@@ -24,7 +24,7 @@ export default function Footer() {
         </div>
         
         <div className="mt-12 pt-8 border-t border-zinc-50 text-center">
-          <p className="text-[10px] font-black text-zinc-300 uppercase tracking-[0.3em]">
+          <p className="text-sm font-bold text-zinc-300 uppercase">
             &copy; 2026 Ristek Fasilkom UI. All rights reserved.
           </p>
         </div>
