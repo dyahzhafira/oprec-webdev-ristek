@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Calendar, FileText, Loader2, MessageSquare } from "lucide-react";
+import { ArrowLeft, Calendar, FileText, Loader2 } from "lucide-react";
 import QuestionEditor from "@/components/QuestionEditor";
 
 interface Question {
@@ -137,15 +137,11 @@ export default function FormDetailPage() {
                         <label className="text-sm font-bold text-zinc-800 uppercase tracking-wide">
                           {q.label} {q.required && <span className="text-red-500">*</span>}
                         </label>
-                        <div className="flex items-center gap-2 text-zinc-400">
-                          <MessageSquare size={12} />
-                          <span className="text-[10px] font-bold uppercase">{q._count?.responses || 0} Respons</span>
-                        </div>
                       </div>
                       {(q._count?.responses || 0) === 0 ? (
                         <button 
                           onClick={() => handleDelete(q.id)}
-                          className="text-red-400 text-[10px] font-bold hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity uppercase"
+                          className="text-red-400 text-sm font-bold uppercase"
                         >
                           Hapus
                         </button>

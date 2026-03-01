@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request, { params }: { params: { id: string } }) {
 const hasSubmissions = await db.response.findFirst({
-  where: { formId: params.formId }
+  where: { formId: params.id }
 });
 
 if (hasSubmissions) {
