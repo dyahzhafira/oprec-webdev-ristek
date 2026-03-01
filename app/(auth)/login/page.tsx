@@ -9,25 +9,33 @@ import { ArrowLeft } from "lucide-react"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
-  const[password, setPassword]=useState("");
-  const[error, setError]=useState("");
+  const [password, setPassword]=useState("");
+  const [error, setError]=useState("");
+  const [loading, setLoading]=useState(false);
   const router=useRouter();
 
   const handleLogin = async (e: React.FormEvent)=>{
     e.preventDefault();
+    setLoading(true);
     setError("");
 
-    const res=await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {"Content-Type":"application/jsom"},
-      body: JSON.stringify({email, password}),
-    });
-    if (res.ok) {
-      router.push("/dashboard");
-      router.refresh();
-    } else {
-      const data = await res.json();
-      setError(data.error || "Login gagal, cek email/password!");
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json(); 
+      if (res.ok) {
+        document.cookie = `token=${data.token}; path=/; max-age=3600`;
+        router.push("/dashboard");
+        router.refresh(); 
+      } else {
+        setError(data.error || "Login gagal, cek email or password!");
+      }
+    } 
+    catch (err) {
+      setError("Kesalahan jaringan, coba lagi!");
     }
 
   }

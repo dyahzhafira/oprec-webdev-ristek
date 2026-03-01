@@ -18,18 +18,29 @@ model User {
 model Form {
   id  String  @id @default(cuid())
   title String
-  status  String  @default("Draft")
+  description String?
   userId  String
   user  User  @relation(fields: [userId], references: [id])
-  questions Question[] 
+  questions Question[]
+  responses Response[]
   createdAt DateTime  @default(now())
+  status String @default("Draft")
 }
 
 model Question {
-  id  String  @id @default(cuid())
-  label String  
-  type  String  @default("text") // text, email, dll
-  placeholder String? 
-  formId  String
-  form  Form  @relation(fields: [formId], references: [id], onDelete: Cascade)
+  id  String @id @default(cuid())
+  label String
+  type String
+  required Boolean @default(false)
+  options String? 
+  formId String
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+}
+
+model Response {
+  id String @id @default(cuid())
+  formId String
+  form Form @relation(fields: [formId], references: [id])
+  answers String
+  createdAt DateTime @default(now())
 }

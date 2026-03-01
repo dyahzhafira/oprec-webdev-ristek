@@ -20,21 +20,22 @@ interface FormData {
 export default function Dashboard() {
   const [myForms, setMyForms] = useState<FormData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch]=useState("");
   
   const [user, setUser] = useState({
     name: "Loading...",
     email: "...",
     initials: ".."
   });
-
-  const fetchForms = async () => {
+  
+  const fetchForms = async (searchKeyword="") => {
     try {
-      const res = await fetch("/api/forms");
+      const res = await fetch(`/api/forms?search=${searchKeyword}`);
       if (!res.ok){
         if (res.status===401){
           console.error("Belum login atau session habis")
         }
-        setMyForms([])
+        setMyForms([]);
         return;
       }
       const data= await res.json();
@@ -44,6 +45,13 @@ export default function Dashboard() {
       setMyForms([]);
     }
   };
+
+  useEffect (()=>{
+    const timer = setTimeout(()=>{
+      fetchForms(search);
+    },500);
+    return ()=>clearTimeout(timer);
+  },[search]);
 
   const fetchUserData = async () => {
     const res = await fetch("/api/auth/me");
@@ -56,7 +64,7 @@ export default function Dashboard() {
   useEffect(() => {
     const init = async () => {
       setIsLoading(true);
-      await Promise.all([fetchUserData(), fetchForms()]);
+      await Promise.all([fetchUserData(), fetchForms("")]);
       setIsLoading(false);
     };
     init();
@@ -88,16 +96,16 @@ export default function Dashboard() {
       console.error("Gagal buat form:", errorData.error || response.statusText);
       alert("Gagal membuat form. Pastikan Anda sudah login.");
     }
-  } catch (err) {
+    } catch (err) {
     console.error("Network Error:", err);
-  }
-};
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FAFAFB] font-sans pb-20 overflow-x-hidden">
       <main className="max-w-7xl mx-auto px-6 md:px-10 py-10 md:py-20">
 
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
           <div className="space-y-2 max-w-2xl">
             <h2 className="text-3xl md:text-5xl font-bold text-zinc-900">
               Your Activity Here!
@@ -106,14 +114,22 @@ export default function Dashboard() {
               Manage your forms and view insights all in one place.
             </p>
           </div>
-          
-          <Button 
-            onClick={handleCreate}
-            className="w-full md:w-auto bg-purple-600 hover:bg-purple-700 text-white px-6 md:px-8 py-6 md:py-7 rounded-lg font-bold text-sm md:text-lg"
-          >
-            <Plus className="mr-2 w-5 h-5 md:w-6 md:h-6" /> 
-            Create New Form
-          </Button>
+
+          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            <input 
+              type="text"
+              placeholder="Search by title..."
+              className="p-3 border border-zinc-200 rounded-lg w-full md:w-64 text-black focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)} 
+            />
+            <Button 
+              onClick={handleCreate}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-6 rounded-lg font-bold"
+            >
+              <Plus className="mr-2" /> Create New Form
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
@@ -141,7 +157,7 @@ export default function Dashboard() {
                 ))
               ) : (
                 <div className="p-20 text-center bg-white border-2 border-dashed rounded-3xl text-zinc-400">
-                  No forms yet. Click "Create New Form" to start.
+                  {search ? `No forms found for "${search}"` : "No forms yet. Click 'Create New Form' to start."}
                 </div>
               )}
             </div>

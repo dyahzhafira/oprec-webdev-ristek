@@ -6,21 +6,21 @@ export async function GET(
   req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params;
-
   try {
+    const { id } = await context.params;
     const userId = await getUserIdFromToken();
 
     if (!userId)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const form = await db.form.findUnique({
+      const form = await db.form.findUnique({
       where: { id },
+      include: {
+        questions: true,
+      },
     });
 
     if (!form)
       return NextResponse.json({ error: "Form not found" }, { status: 404 });
-
     if (form.userId !== userId)
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 

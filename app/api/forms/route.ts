@@ -1,15 +1,22 @@
-import { db } from "../../../lib/prisma";
+import { db } from "@/lib/prisma";
 import { getUserIdFromToken } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: Request) { 
   const userId = await getUserIdFromToken();
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { searchParams } = new URL(req.url);
+  const search = searchParams.get("search") || "";
+  const sort = searchParams.get("sort") || "desc";
 
   const forms = await db.form.findMany({
-    where: { userId },
-    orderBy: { id: "desc" },
+    where: { 
+      userId,
+      title: { contains: search},
+    },
+    orderBy: { createdAt: sort as "asc" | "desc" }
   });
+
   return NextResponse.json(forms || []);
 }
 
